@@ -11,9 +11,11 @@ load_dotenv()
 class WAFDatabase:
     def __init__(self):
         try:
-            # MongoDB Atlas connection
+            # Using full MongoDB Atlas URL with credentials
+            MONGODB_URI = "mongodb+srv://churchillokonkwo:u8ZQ2Um6ZgwpG42K@waf-cluster.kv58j.mongodb.net/?retryWrites=true&w=majority&appName=WAF-Cluster"
+            
             self.client = MongoClient(
-                os.getenv("MONGODB_URI"),
+                MONGODB_URI,  # Direct URL instead of os.getenv()
                 serverSelectionTimeoutMS=5000,
                 connectTimeoutMS=5000,
                 socketTimeoutMS=5000,
@@ -22,7 +24,6 @@ class WAFDatabase:
                 tls=True,
                 tlsCAFile=certifi.where()
             )
-            
             # Initialize database and collections
             self.db = self.client["Web_Application_Firewall"]
             self.collection_logs = self.db["logs"]
