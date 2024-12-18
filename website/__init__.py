@@ -5,6 +5,7 @@ from flask_login import LoginManager
 from pymongo import MongoClient
 import os
 from dotenv import load_dotenv
+import certifi
 
 load_dotenv()
 
@@ -14,17 +15,19 @@ DB_NAME = "database.db"
 
 def create_app():
     app = Flask(__name__)
-    app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'dev')
+    app.config['SECRET_KEY'] = 'ee57afdfa96ac3c926796cc1228d509c'
     
     # 1. Setup MongoDB first because WAF needs it immediately
     try:
         mongo_client = MongoClient(
-            os.getenv('MONGODB_URI'),
+            "mongodb+srv://churchillokonkwo:u8ZQ2Um6ZgwpG42K@waf-cluster.kv58j.mongodb.net/?retryWrites=true&w=majority&appName=WAF-Cluster",
             serverSelectionTimeoutMS=5000,
             connectTimeoutMS=5000,
             socketTimeoutMS=5000,
             maxPoolSize=50,
-            retryWrites=True
+            retryWrites=True,
+            tls=True,
+            tlsCAFile=certifi.where()
         )
         mongo_client.admin.command('ping')
         print("MongoDB connection successful!")
