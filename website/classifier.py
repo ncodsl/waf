@@ -3,14 +3,27 @@ This class impelemnts some methods for cleaning of the inputs and uses trained c
 
 import json
 import urllib.parse
+import os
 
 import joblib
 from .request import Request
 
 class ThreatClassifier(object):
     def __init__(self):
-        self.clf = joblib.load(r"website/ML-models/final_model_pred.pkl")     
-        self.pt_clf = joblib.load(r"website/ML-models/pt_final_model.pkl")
+        # Get the base directory path
+        base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        
+        # Define model paths
+        pred_model_path = os.path.join(base_dir, 'website', 'ML-models', 'final_model_pred.pkl')
+        pt_model_path = os.path.join(base_dir, 'website', 'ML-models', 'pt_final_model.pkl')
+        
+        # Load models
+        try:
+            self.clf = joblib.load(pred_model_path)
+            self.pt_clf = joblib.load(pt_model_path)
+        except Exception as e:
+            print(f"Error loading models: {e}")
+            raise
 
     def __unquote(self, text):
         k = 0
