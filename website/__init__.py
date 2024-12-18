@@ -6,10 +6,14 @@ from pymongo import MongoClient
 import os
 from dotenv import load_dotenv
 import certifi
+import logging
+
+# Setup logging
+logging.basicConfig(level=logging.DEBUG)
+logger = logging.getLogger(__name__)
 
 load_dotenv()
 
-# Initialize but don't configure SQLAlchemy yet
 db = SQLAlchemy()
 DB_NAME = "database.db"
 
@@ -17,29 +21,42 @@ def create_app():
     app = Flask(__name__)
     app.config['SECRET_KEY'] = 'ee57afdfa96ac3c926796cc1228d509c'
     
-    # 1. Setup MongoDB first because WAF needs it immediately
+    # 1. Setup MongoDB with detailed error handling
     try:
+        logger.info("Attempting MongoDB connection...")
+        
+        MONGODB_URI = "mongodb+srv://churchillokonkwo:u8ZQ2Um6ZgwpG42K@waf-cluster.kv58j.mongodb.net/?retryWrites=true&w=majority&appName=WAF-Cluster"
+        
         mongo_client = MongoClient(
-            "mongodb+srv://churchillokonkwo:u8ZQ2Um6ZgwpG42K@waf-cluster.kv58j.mongodb.net/?retryWrites=true&w=majority&appName=WAF-Cluster",
-            serverSelectionTimeoutMS=5000,
-            connectTimeoutMS=5000,
-            socketTimeoutMS=5000,
+            MONGODB_URI,
+            serverSelectionTimeoutMS=10000,  # Increased timeout
+            connectTimeoutMS=10000,
+            socketTimeoutMS=10000,
             maxPoolSize=50,
             retryWrites=True,
             tls=True,
             tlsCAFile=certifi.where()
         )
-        mongo_client.admin.command('ping')
-        print("MongoDB connection successful!")
-    except Exception as e:
-        print(f"MongoDB connection failed: {e}")
         
-    # 2. Then setup SQLAlchemy for user management
+        # Test connection with timeout
+        logger.info("Testing MongoDB connection...")
+        mongo_client.admin.command('ping')
+        
+        # Store mongo client in app config
+        app.config['mongo_client'] = mongo_client
+        logger.info("MongoDB connection successful!")
+        
+    except Exception as e:
+        logger.error(f"MongoDB connection failed: {str(e)}")
+        logger.error("Full error details:", exc_info=True)
+        raise  # Re-raise to see if this is causing deployment issues
+        
+    # 2. Setup SQLAlchemy
     app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{DB_NAME}'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     db.init_app(app)
     
-    # 3. Register blueprints after both DBs are setup
+    # 3. Register blueprints
     from .views import views
     from .auth import auth
     

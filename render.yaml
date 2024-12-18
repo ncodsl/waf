@@ -3,13 +3,48 @@ services:
     name: waf-application
     env: python
     buildCommand: |
-      python -m venv --clear .venv
+      python -m venv .venv
       . .venv/bin/activate
       pip install --upgrade pip
       pip install -r requirements.txt
-    startCommand: gunicorn "main:app" --timeout 120 --workers 3
+    startCommand: gunicorn "main:app" --timeout 120
     envVars:
-      - key: MONGODB_URI
-        value: mongodb+srv://churchillokonkwo:u8ZQ2Um6ZgwpG42K@waf-cluster.kv58j.mongodb.net/?retryWrites=true&w=majority&appName=WAF-Cluster
-      - key: PYTHON_VERSION
-        value: 3.11.0
+      - key: SECRET_KEY
+        value: ee57afdfa96ac3c926796cc1228d509c
+      - key: MONGODB_HOST
+        value: waf-mongodb.onrender.com
+      - key: MONGODB_USER
+        value: churchillokonkwo
+      - key: MONGODB_PASSWORD
+        value: u8ZQ2Um6ZgwpG42K
+
+  - type: pserv
+    name: waf-mongodb
+    env: python
+    buildCommand: |
+      # Install MongoDB
+      wget -qO - https://www.mongodb.org/static/pgp/server-6.0.asc | sudo apt-key add -
+      echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/6.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-6.0.list
+      sudo apt-get update
+      sudo apt-get install -y mongodb-org
+      
+      # Create data directory
+      sudo mkdir -p /data/db
+      sudo chmod 777 /data/db
+    startCommand: |
+      mongod --bind_ip_all --port 27017 --auth &
+      sleep 5
+      mongosh admin --eval '
+        if (!db.getUser("churchillokonkwo")) {
+          db.createUser({
+            user: "churchillokonkwo",
+            pwd: "u8ZQ2Um6ZgwpG42K",
+            roles: [ { role: "root", db: "admin" } ]
+          })
+        }
+      '
+    plan: standard
+    disk:
+      name: mongodb-data
+      mountPath: /data/db
+      sizeGB: 10

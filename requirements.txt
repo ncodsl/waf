@@ -13,4 +13,5 @@ sqlalchemy==2.0.36
 gunicorn==23.0.0
 twilio==9.3.8
 certifi==2023.11.17
+dnspython==2.4.2
 
