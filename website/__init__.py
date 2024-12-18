@@ -3,9 +3,11 @@ from flask_sqlalchemy import SQLAlchemy
 from os import path
 from flask_login import LoginManager
 import pymongo
+from pymongo import MongoClient
 import os
 from dotenv import load_dotenv
 import logging
+import dns.resolver
 
 # Setup logging
 logging.basicConfig(level=logging.DEBUG)
@@ -20,11 +22,12 @@ def create_app():
     app = Flask(__name__)
     app.config['SECRET_KEY'] = 'ee57afdfa96ac3c926796cc1228d509c'
     
-    # 1. Setup MongoDB with pymongo
+    # 1. Setup MongoDB with pymongo using srv format
     try:
         logger.info("Attempting MongoDB connection...")
         
-        client = pymongo.MongoClient('mongodb://churchillokonkwo:u8ZQ2Um6ZgwpG42K@waf-cluster.kv58j.mongodb.net/?authMechanism=SCRAM-SHA-256&authSource=admin&retryWrites=true&w=majority&appName=WAF-Cluster')
+        # Using mongodb+srv:// format for proper DNS resolution
+        client = pymongo.MongoClient('mongodb+srv://churchillokonkwo:u8ZQ2Um6ZgwpG42K@waf-cluster.kv58j.mongodb.net/?retryWrites=true&w=majority&appName=WAF-Cluster')
         
         # Test connection
         logger.info("Testing MongoDB connection...")
