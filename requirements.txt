@@ -5,10 +5,10 @@ joblib==1.2.0
 numpy==1.24.3
 pandas==2.0.1
 pymongo==4.10.1
-waitress==3.0.2
+waitress
 python-dotenv==1.0.1
 requests==2.31.0
-scikit-learn==1.2.2
+scikit-learn==1.6.0
 sqlalchemy==2.0.36
 gunicorn==23.0.0
 twilio==9.3.8
