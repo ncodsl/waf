@@ -1,6 +1,6 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
-from flask_pymongo import pyMongo
+from flask_pymongo import PyMongo
 from flask_login import LoginManager
 import os
 from dotenv import load_dotenv
