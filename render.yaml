@@ -3,7 +3,11 @@ services:
     name: waf-application
     env: python
     buildCommand: |
-      pip install --no-cache-dir -r requirements.txt
+      python -m venv --clear .venv
+      . .venv/bin/activate
+      pip install --upgrade pip
+      pip install --upgrade numpy scipy joblib scikit-learn
+      pip install -r requirements.txt
     startCommand: gunicorn "main:app"
     envVars:
       - key: PYTHON_VERSION
