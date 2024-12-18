@@ -21,10 +21,11 @@ def create_app():
     app.config["MONGO_URI"] = os.getenv("MONGODB_URI")  # Mongo URI from environment variable
     mongo = PyMongo(app)
     
-    # Test MongoDB connection
+    # Test MongoDB connection using ping
     try:
-        collections = mongo.db.list_collection_names()
-        print("MongoDB collections: ", collections)
+        # Ping the MongoDB server to check the connection
+        mongo.db.command("ping")
+        print("MongoDB connection successful!")
     except Exception as e:
         print(f"Error connecting to MongoDB: {str(e)}")
         raise
