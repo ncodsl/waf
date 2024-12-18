@@ -2,8 +2,7 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from os import path
 from flask_login import LoginManager
-from pymongo import MongoClient
-from pymongo.auth import MECHANISMS
+import pymongo
 import os
 from dotenv import load_dotenv
 import logging
@@ -21,21 +20,18 @@ def create_app():
     app = Flask(__name__)
     app.config['SECRET_KEY'] = 'ee57afdfa96ac3c926796cc1228d509c'
     
-    # 1. Setup MongoDB with explicit SCRAM-SHA-256 authentication
+    # 1. Setup MongoDB with pymongo
     try:
-        logger.info("Attempting MongoDB connection with SCRAM-SHA-256...")
+        logger.info("Attempting MongoDB connection...")
         
-        # MongoDB URI with explicit SCRAM-SHA-256
-        MONGODB_URI = "mongodb://churchillokonkwo:u8ZQ2Um6ZgwpG42K@waf-cluster.kv58j.mongodb.net/?authMechanism=SCRAM-SHA-256&authSource=admin&retryWrites=true&w=majority&appName=WAF-Cluster"
-        
-        mongo_client = MongoClient( MONGODB_URI )
+        client = pymongo.MongoClient('mongodb://churchillokonkwo:u8ZQ2Um6ZgwpG42K@waf-cluster.kv58j.mongodb.net/?authMechanism=SCRAM-SHA-256&authSource=admin&retryWrites=true&w=majority&appName=WAF-Cluster')
         
         # Test connection
         logger.info("Testing MongoDB connection...")
-        mongo_client.admin.command('ping')
+        client.admin.command('ping')
         
         # Store mongo client in app config
-        app.config['mongo_client'] = mongo_client
+        app.config['mongo_client'] = client
         logger.info("MongoDB connection successful!")
         
     except Exception as e:
