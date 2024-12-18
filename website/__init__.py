@@ -3,6 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from os import path
 from flask_login import LoginManager
 from pymongo import MongoClient
+from pymongo.auth import MECHANISMS
 import os
 from dotenv import load_dotenv
 import logging
@@ -20,20 +21,22 @@ def create_app():
     app = Flask(__name__)
     app.config['SECRET_KEY'] = 'ee57afdfa96ac3c926796cc1228d509c'
     
-    # 1. Setup MongoDB with simplified connection
+    # 1. Setup MongoDB with explicit SCRAM-SHA-256 authentication
     try:
-        logger.info("Attempting MongoDB connection...")
+        logger.info("Attempting MongoDB connection with SCRAM-SHA-256...")
         
-        # Basic connection string without SSL/TLS in the URI
-        MONGODB_URI = "mongodb+srv://churchillokonkwo:u8ZQ2Um6ZgwpG42K@waf-cluster.kv58j.mongodb.net/?retryWrites=true&w=majority&appName=WAF-Cluster"        
+        # MongoDB URI with explicit SCRAM-SHA-256
+        MONGODB_URI = "mongodb://churchillokonkwo:u8ZQ2Um6ZgwpG42K@waf-cluster.kv58j.mongodb.net/?authMechanism=SCRAM-SHA-256&authSource=admin&retryWrites=true&w=majority&appName=WAF-Cluster"
+        
         mongo_client = MongoClient(
             MONGODB_URI,
             serverSelectionTimeoutMS=5000,
             connectTimeoutMS=5000,
             socketTimeoutMS=5000,
             maxPoolSize=50,
-            retryWrites=True,
-            # Remove all SSL/TLS related options
+            authMechanism='SCRAM-SHA-256',  # Explicit SCRAM mechanism
+            authSource='admin',
+            retryWrites=True
         )
         
         # Test connection
@@ -47,7 +50,7 @@ def create_app():
     except Exception as e:
         logger.error(f"MongoDB connection failed: {str(e)}")
         logger.error("Full error details:", exc_info=True)
-        raise  # Re-raise to see if this is causing deployment issues
+        raise
         
     # 2. Setup SQLAlchemy
     app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{DB_NAME}'
