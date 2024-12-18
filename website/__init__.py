@@ -5,7 +5,6 @@ from flask_login import LoginManager
 from pymongo import MongoClient
 import os
 from dotenv import load_dotenv
-import certifi
 import logging
 
 # Setup logging
@@ -21,24 +20,23 @@ def create_app():
     app = Flask(__name__)
     app.config['SECRET_KEY'] = 'ee57afdfa96ac3c926796cc1228d509c'
     
-    # 1. Setup MongoDB with detailed error handling
+    # 1. Setup MongoDB with simplified connection
     try:
         logger.info("Attempting MongoDB connection...")
         
-        MONGODB_URI = "mongodb+srv://churchillokonkwo:u8ZQ2Um6ZgwpG42K@waf-cluster.kv58j.mongodb.net/?retryWrites=true&w=majority&appName=WAF-Cluster"
+        # Simplified connection string without SSL options
+        MONGODB_URI = "mongodb://churchillokonkwo:u8ZQ2Um6ZgwpG42K@waf-cluster.kv58j.mongodb.net:27017/Web_Application_Firewall"
         
         mongo_client = MongoClient(
             MONGODB_URI,
-            serverSelectionTimeoutMS=10000,  # Increased timeout
-            connectTimeoutMS=10000,
-            socketTimeoutMS=10000,
-            maxPoolSize=50,
-            retryWrites=True,
-            tls=True,
-            tlsCAFile=certifi.where()
+            serverSelectionTimeoutMS=5000,
+            connectTimeoutMS=5000,
+            socketTimeoutMS=5000,
+            ssl=False,  # Disable SSL
+            directConnection=True  # Try direct connection
         )
         
-        # Test connection with timeout
+        # Test connection
         logger.info("Testing MongoDB connection...")
         mongo_client.admin.command('ping')
         
