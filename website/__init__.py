@@ -28,16 +28,7 @@ def create_app():
         # MongoDB URI with explicit SCRAM-SHA-256
         MONGODB_URI = "mongodb://churchillokonkwo:u8ZQ2Um6ZgwpG42K@waf-cluster.kv58j.mongodb.net/?authMechanism=SCRAM-SHA-256&authSource=admin&retryWrites=true&w=majority&appName=WAF-Cluster"
         
-        mongo_client = MongoClient(
-            MONGODB_URI,
-            serverSelectionTimeoutMS=5000,
-            connectTimeoutMS=5000,
-            socketTimeoutMS=5000,
-            maxPoolSize=50,
-            authMechanism='SCRAM-SHA-256',  # Explicit SCRAM mechanism
-            authSource='admin',
-            retryWrites=True
-        )
+        mongo_client = MongoClient( MONGODB_URI )
         
         # Test connection
         logger.info("Testing MongoDB connection...")
