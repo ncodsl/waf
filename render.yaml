@@ -6,9 +6,10 @@ services:
       python -m venv --clear .venv
       . .venv/bin/activate
       pip install --upgrade pip
-      pip install --upgrade numpy scipy joblib scikit-learn
       pip install -r requirements.txt
-    startCommand: gunicorn "main:app"
+    startCommand: gunicorn "main:app" --timeout 120 --workers 3
     envVars:
+      - key: MONGODB_URI
+        value: mongodb+srv://churchillokonkwo:u8ZQ2Um6ZgwpG42K@waf-cluster.kv58j.mongodb.net/?retryWrites=true&w=majority&appName=WAF-Cluster
       - key: PYTHON_VERSION
-        value: 3.13.0
+        value: 3.11.0

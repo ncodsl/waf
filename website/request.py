@@ -76,13 +76,7 @@ class DBController(object):
         self.collection_threat_location=self.db['threat_location']
 
 
-    def save(self, obj):  # to take only request
-        if not isinstance(obj, Request):
-            raise TypeError("Object should be a Request!!!")
-
-
-        #======================================================================================================================================
-        obj.timestamp = datetime.datetime.now()  # take from Request
+    def save(self, req):
         try:
             highest_id = self.collection_logs.find_one(
                 sort=[('_id', -1)])['_id']
