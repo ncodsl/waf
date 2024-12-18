@@ -24,16 +24,16 @@ def create_app():
     try:
         logger.info("Attempting MongoDB connection...")
         
-        # Simplified connection string without SSL options
-    
-        MONGODB_URI = "mongodb+srv://churchillokonkwo:u8ZQ2Um6ZgwpG42K@waf-cluster.kv58j.mongodb.net/?retryWrites=true&w=majority&appName=WAF-Cluster"
+        # Basic connection string without SSL/TLS in the URI
+        MONGODB_URI = "mongodb+srv://churchillokonkwo:u8ZQ2Um6ZgwpG42K@waf-cluster.kv58j.mongodb.net/?retryWrites=true&w=majority&appName=WAF-Cluster"        
         mongo_client = MongoClient(
             MONGODB_URI,
             serverSelectionTimeoutMS=5000,
             connectTimeoutMS=5000,
             socketTimeoutMS=5000,
-            ssl=False,  # Disable SSL
-            directConnection=True  # Try direct connection
+            maxPoolSize=50,
+            retryWrites=True,
+            # Remove all SSL/TLS related options
         )
         
         # Test connection
