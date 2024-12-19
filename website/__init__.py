@@ -24,7 +24,7 @@ def create_app():
     # Test MongoDB connection using ping
     try:
         # Ping the MongoDB server to check the connection
-        mongo.db.command("ping")
+        mongo.db.command("ping")  # This ensures the MongoDB connection is active
         print("MongoDB connection successful!")
     except Exception as e:
         print(f"Error connecting to MongoDB: {str(e)}")
