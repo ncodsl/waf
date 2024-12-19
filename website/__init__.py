@@ -24,7 +24,7 @@ def create_app():
     # Test MongoDB connection using ping
     try:
         # Ping the MongoDB server to check the connection
-        mongo.db.command("ping")  # This ensures the MongoDB connection is active
+        mongo.admin.command("ping")  # This ensures the MongoDB connection is active
         print("MongoDB connection successful!")
     except Exception as e:
         print(f"Error connecting to MongoDB: {str(e)}")
@@ -54,6 +54,10 @@ def create_app():
     @login_manager.user_loader
     def load_user(id):
         return User.query.get(int(id))
+
+    # Dynamic port for Render or fallback to 5000 locally
+    port = os.getenv('PORT', 5000)  # Render sets PORT dynamically
+    app.run(debug=True, host='0.0.0.0', port=int(port))  # Ensuring the app listens on the correct port
 
     return app
 
