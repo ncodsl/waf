@@ -1,66 +1,62 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
-from pymongo import MongoClient
-from flask_pymongo import PyMongo
 from flask_login import LoginManager
 import os
-from dotenv import load_dotenv
 from os import path
+from pymongo.mongo_client import MongoClient
+from pymongo.server_api import ServerApi
+from dotenv import load_dotenv
 
 # Load environment variables from .env file
 load_dotenv()
 
-# Initialize SQLAlchemy and MongoDB
+# Initialize the Flask app and databases
+app = Flask(__name__)
 db = SQLAlchemy()
 DB_NAME = "database.db"
 
-def create_app():
-    app = Flask(__name__)
-    app.config['SECRET_KEY'] = 'ee57afdfa96ac3c926796cc1228d509c'
+# Get MongoDB URI from the environment variable
+uri = os.getenv("MONGODB_URI")  # Fetches the MONGO_URI directly from the .env file
 
-    # 1. Setup MongoDB with Flask-PyMongo
-    app.config["MONGO_URI"] = os.getenv("MONGODB_URI")  # Mongo URI from environment variable
-    mongo = PyMongo(app)
-    
-    # Test MongoDB connection using ping
-  #  try:
-        # Ping the MongoDB server to check the connection
-       # mongo.db.command("ping")  # This ensures the MongoDB connection is active
-       # print("MongoDB connection successful!")
-  #  except Exception as e:
-   #     print(f"Error connecting to MongoDB: {str(e)}")
-       # raise
+# Create a new MongoDB client and connect to the server
+client = MongoClient(uri, server_api=ServerApi('1'))
 
-    # 2. Setup SQLAlchemy
-    app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{DB_NAME}'  # SQLite database URI
-    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-    db.init_app(app)
+# Send a ping to confirm a successful connection to MongoDB
+try:
+    client.admin.command('ping')  # The 'admin' database is commonly used for testing the connection
+    print("Pinged your deployment. You successfully connected to MongoDB!")
+except Exception as e:
+    print(f"An error occurred while pinging MongoDB: {e}")
+    raise  # Raise the error if the MongoDB connection fails, to stop further initialization
 
-    # 3. Register blueprints
-    from .views import views
-    from .auth import auth
-    app.register_blueprint(views, url_prefix='/')
-    app.register_blueprint(auth, url_prefix='/')
+# 2. Setup SQLAlchemy
+app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{DB_NAME}'  # SQLite database URI
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+db.init_app(app)
 
-    # 4. Initialize models and create the database (if it doesn't exist)
-    from .models import User, Note
-    with app.app_context():
-        db.create_all()
+# 3. Register blueprints
+from .views import views
+from .auth import auth
+app.register_blueprint(views, url_prefix='/')
+app.register_blueprint(auth, url_prefix='/')
 
-    # 5. Setup login manager
-    login_manager = LoginManager()
-    login_manager.login_view = 'auth.login'
-    login_manager.init_app(app)
+# 4. Initialize models and create the database (if it doesn't exist)
+from .models import User, Note
+with app.app_context():
+    db.create_all()
 
-    @login_manager.user_loader
-    def load_user(id):
-        return User.query.get(int(id))
+# 5. Setup login manager
+login_manager = LoginManager()
+login_manager.login_view = 'auth.login'
+login_manager.init_app(app)
 
-    # Dynamic port for Render or fallback to 5000 locally
-    port = os.getenv('PORT', 5000)  # Render sets PORT dynamically
-    app.run(debug=True, host='0.0.0.0', port=int(port))  # Ensuring the app listens on the correct port
+@login_manager.user_loader
+def load_user(id):
+    return User.query.get(int(id))
 
-    return app
+# Dynamic port for Render or fallback to 5000 locally
+port = os.getenv('PORT', 5000)  # Render sets PORT dynamically
+app.run(debug=True, host='0.0.0.0', port=int(port))  # Ensuring the app listens on the correct port
 
 def create_database(app):
     # Check if the database exists, if not, create it
