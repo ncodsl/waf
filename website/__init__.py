@@ -12,6 +12,7 @@ load_dotenv()
 
 # Initialize the Flask app and databases
 app = Flask(__name__)
+app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'default_secret_key_for_local_dev')
 db = SQLAlchemy()
 DB_NAME = "database.db"
 
