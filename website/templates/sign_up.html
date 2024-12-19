@@ -1,51 +1,342 @@
-{% extends "base.html" %} {% block title %}Sign Up{% endblock %} {% block
-content %}
+<div class="signup-wrapper">
+  <div class="signup-container">
+    <!-- Header -->
+    <div class="signup-header">
+      <div class="logo-section">
+        <div class="logo-shield">
+          <span class="material-icons">security</span>
+        </div>
+        <h1>WAF SECURITY</h1>
+      </div>
+      <p class="subtitle">Enterprise-Grade Web Protection</p>
+    </div>
 
-<form method="POST" class="form">
-  <h3 align="center" style="color: chartreuse; margin: 50px">Sign Up</h3>
+    <!-- Signup Form -->
+    <div class="form-card">
+      <form method="POST" class="signup-form">
+        <h2>Create Account</h2>
+        <p class="form-description">Join thousands of protected applications</p>
+        
+        <!-- Email Field -->
+        <div class="form-field">
+          <label for="email">
+            <span class="label-text">Email Address</span>
+            <span class="required">*</span>
+          </label>
+          <div class="input-wrapper">
+            <span class="material-icons input-icon">email</span>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              placeholder="Enter your work email"
+              required
+            />
+          </div>
+        </div>
 
-  <div class="form-group">
-    <label for="email">Email Address</label>
-    <input
-      type="email"
-      class="form-control"
-      id="email"
-      name="email"
-      placeholder="Enter email"
-    />
-  </div>
-  <div class="form-group">
-    <label for="firstName">First Name</label>
-    <input
-      type="text"
-      class="form-control"
-      id="firstName"
-      name="firstName"
-      placeholder="Enter first name"
-    />
-  </div>
-  <div class="form-group">
-    <label for="password1">Password</label>
-    <input
-      type="password"
-      class="form-control"
-      id="password1"
-      name="password1"
-      placeholder="Enter password"
-    />
-  </div>
-  <div class="form-group">
-    <label for="password2">Password (Confirm)</label>
-    <input
-      type="password"
-      class="form-control"
-      id="password2"
-      name="password2"
-      placeholder="Confirm password"
-    />
-  </div>
-  <br />
-  <button type="submit" class="btn btn-primary">Submit</button>
-</form>
+        <!-- First Name Field -->
+        <div class="form-field">
+          <label for="firstName">
+            <span class="label-text">First Name</span>
+            <span class="required">*</span>
+          </label>
+          <div class="input-wrapper">
+            <span class="material-icons input-icon">person</span>
+            <input
+              type="text"
+              id="firstName"
+              name="firstName"
+              placeholder="Enter your first name"
+              required
+            />
+          </div>
+        </div>
 
-{% endblock %}
+        <!-- Password Fields Group -->
+        <div class="password-group">
+          <div class="form-field">
+            <label for="password1">
+              <span class="label-text">Password</span>
+              <span class="required">*</span>
+            </label>
+            <div class="input-wrapper">
+              <span class="material-icons input-icon">lock</span>
+              <input
+                type="password"
+                id="password1"
+                name="password1"
+                placeholder="Create password"
+                required
+              />
+            </div>
+          </div>
+
+          <div class="form-field">
+            <label for="password2">
+              <span class="label-text">Confirm Password</span>
+              <span class="required">*</span>
+            </label>
+            <div class="input-wrapper">
+              <span class="material-icons input-icon">lock_clock</span>
+              <input
+                type="password"
+                id="password2"
+                name="password2"
+                placeholder="Confirm password"
+                required
+              />
+            </div>
+          </div>
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" class="signup-btn">
+          Create Secure Account
+          <span class="material-icons btn-icon">arrow_forward</span>
+        </button>
+
+        <div class="login-link">
+          Already have an account? <a href="/login">Sign In</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<style>
+  @import url('https://fonts.googleapis.com/icon?family=Material+Icons');
+  
+  :root {
+    /* Primary Colors */
+    --primary-900: #0A192F;
+    --primary-800: #112240;
+    --primary-700: #1E3A5F;
+    --primary-600: #2A4A73;
+    --primary-100: #E6F1FF;
+    
+    /* Accent Colors */
+    --accent-500: #FF5722;
+    --accent-600: #F4511E;
+    --accent-700: #E64A19;
+    
+    /* Neutral Colors */
+    --neutral-900: #1A1F36;
+    --neutral-800: #2A2F45;
+    --neutral-700: #3C4257;
+    --neutral-600: #4F566B;
+    --neutral-500: #697386;
+    --neutral-400: #8792A2;
+    --neutral-300: #A3ACB9;
+    --neutral-200: #CED4DA;
+    --neutral-100: #F7FAFC;
+    
+    /* Semantic Colors */
+    --error: #DC2626;
+    --success: #059669;
+    
+    /* Other Variables */
+    --card-shadow: 0 8px 24px rgba(10, 25, 47, 0.15);
+    --input-shadow: 0 2px 4px rgba(10, 25, 47, 0.05);
+  }
+
+  body {
+    background-color: var(--primary-900);
+    color: var(--neutral-100);
+    font-family: system-ui, -apple-system, sans-serif;
+  }
+
+  .signup-wrapper {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    background: linear-gradient(
+      135deg,
+      var(--primary-900),
+      var(--primary-800)
+    );
+  }
+
+  .signup-container {
+    width: 100%;
+    max-width: 480px;
+  }
+
+  /* Logo & Header */
+  .logo-section {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .logo-shield {
+    background: var(--accent-500);
+    padding: 0.75rem;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .logo-shield .material-icons {
+    font-size: 2rem;
+    color: white;
+  }
+
+  .signup-header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+  }
+
+  .signup-header h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: white;
+    letter-spacing: 0.5px;
+  }
+
+  .subtitle {
+    color: var(--neutral-300);
+    font-size: 1.1rem;
+    margin-top: 0.5rem;
+  }
+
+  /* Form Card */
+  .form-card {
+    background: var(--primary-800);
+    padding: 2.5rem;
+    border-radius: 16px;
+    box-shadow: var(--card-shadow);
+    border: 1px solid var(--primary-700);
+  }
+
+  .signup-form h2 {
+    color: white;
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+  }
+
+  .form-description {
+    color: var(--neutral-400);
+    margin-bottom: 2rem;
+  }
+
+  /* Form Fields */
+  .form-field {
+    margin-bottom: 1.5rem;
+  }
+
+  .form-field label {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .label-text {
+    color: var(--neutral-200);
+    font-size: 0.875rem;
+    font-weight: 500;
+  }
+
+  .required {
+    color: var(--accent-500);
+  }
+
+  .input-wrapper {
+    position: relative;
+  }
+
+  .input-icon {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--neutral-500);
+    font-size: 1.25rem;
+  }
+
+  input {
+    width: 100%;
+    padding: 0.875rem 1rem 0.875rem 3rem;
+    background: var(--primary-900);
+    border: 1px solid var(--primary-700);
+    border-radius: 8px;
+    color: white;
+    font-size: 1rem;
+    transition: all 0.2s ease;
+  }
+
+  input:focus {
+    outline: none;
+    border-color: var(--accent-500);
+    box-shadow: 0 0 0 3px rgba(255, 87, 34, 0.1);
+  }
+
+  input::placeholder {
+    color: var(--neutral-600);
+  }
+
+  /* Button */
+  .signup-btn {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 1rem;
+    background: var(--accent-500);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .signup-btn:hover {
+    background: var(--accent-600);
+    transform: translateY(-1px);
+  }
+
+  .btn-icon {
+    font-size: 1.25rem;
+  }
+
+  /* Login Link */
+  .login-link {
+    text-align: center;
+    margin-top: 1.5rem;
+    color: var(--neutral-400);
+    font-size: 0.875rem;
+  }
+
+  .login-link a {
+    color: var(--accent-500);
+    text-decoration: none;
+    font-weight: 500;
+  }
+
+  .login-link a:hover {
+    color: var(--accent-600);
+    text-decoration: underline;
+  }
+
+  /* Responsive Design */
+  @media (max-width: 480px) {
+    .signup-container {
+      padding: 1rem;
+    }
+
+    .form-card {
+      padding: 1.5rem;
+    }
+  }
+</style>
+

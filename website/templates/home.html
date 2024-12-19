@@ -1,30 +1,306 @@
-{% extends "base.html" %} {% block title %}Home{% endblock %} {% block content
-  %}
-  <h1 align="center" style="color: chartreuse; margin: 50px">Notes</h1>
-  <ul class="list-group list-group-flush" id="notes">
-    {% for note in user.notes %}
-    <li
-      class="form-control"
-      style="background-color: rgb(34, 34, 35); margin: 10px; border-radius: 5px"
-    >
-      {{ note.data }}
-      <button type="button" class="close" onClick="deleteNote({{ note.id }})">
-        <span aria-hidden="true">&times;</span>
-      </button>
-    </li>
-    {% endfor %}
-  </ul>
-  <form method="POST">
-    <textarea
-      name="note"
-      id="note"
-      class="form-control"
-      ,
-      style="margin: 20px"
-    ></textarea>
-    <br />
-    <div align="center">
-      <button type="submit" class="btn btn-primary">Add Note</button>
+<div class="home-wrapper">
+  <div class="home-container">
+    <!-- Header -->
+    <div class="home-header">
+      <div class="logo-section">
+        <div class="logo-shield">
+          <span class="material-icons">security</span>
+        </div>
+        <h1>WAF SECURITY</h1>
+      </div>
+      <p class="subtitle">Your Protected Dashboard</p>
     </div>
-  </form>
-  {% endblock %}
+
+    <!-- Notes Section -->
+    <div class="content-card">
+      <div class="card-header">
+        <h2>Security Notes</h2>
+        <p class="section-description">Manage your secure notes and observations</p>
+      </div>
+
+      <!-- Add Note Form -->
+      <form method="POST" class="note-form">
+        <div class="input-wrapper">
+          <span class="material-icons input-icon">edit_note</span>
+          <textarea
+            name="note"
+            id="note"
+            placeholder="Write a secure note..."
+            required
+          ></textarea>
+        </div>
+        <button type="submit" class="add-note-btn">
+          Add Note
+          <span class="material-icons btn-icon">add_circle</span>
+        </button>
+      </form>
+
+      <!-- Notes Grid -->
+      <div class="notes-grid">
+        <div class="note-card">
+          <p class="note-content"></p>
+          <button 
+            class="delete-btn" 
+            onclick="deleteNote('{{ note.id }}')"
+            aria-label="Delete note">
+            <span class="material-icons">delete</span>
+            <span class="delete-text">Delete</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  @import url('https://fonts.googleapis.com/icon?family=Material+Icons');
+  
+  :root {
+    /* Primary Colors */
+    --primary-900: #0A192F;
+    --primary-800: #112240;
+    --primary-700: #1E3A5F;
+    --primary-600: #2A4A73;
+    --primary-100: #E6F1FF;
+    
+    /* Accent Colors */
+    --accent-500: #FF5722;
+    --accent-600: #F4511E;
+    --accent-700: #E64A19;
+    
+    /* Neutral Colors */
+    --neutral-900: #1A1F36;
+    --neutral-800: #2A2F45;
+    --neutral-700: #3C4257;
+    --neutral-600: #4F566B;
+    --neutral-500: #697386;
+    --neutral-400: #8792A2;
+    --neutral-300: #A3ACB9;
+    --neutral-200: #CED4DA;
+    --neutral-100: #F7FAFC;
+  }
+
+  body {
+    background-color: var(--primary-900);
+    color: var(--neutral-100);
+    font-family: system-ui, -apple-system, sans-serif;
+  }
+
+  .home-wrapper {
+    min-height: 100vh;
+    padding: 2rem;
+    background: linear-gradient(135deg, var(--primary-900), var(--primary-800));
+  }
+
+  .home-container {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  /* Header Styling */
+  .logo-section {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .logo-shield {
+    background: var(--accent-500);
+    padding: 0.75rem;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .logo-shield .material-icons {
+    font-size: 2rem;
+    color: white;
+  }
+
+  .home-header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+  }
+
+  .home-header h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: white;
+    letter-spacing: 0.5px;
+  }
+
+  .subtitle {
+    color: var(--neutral-300);
+    font-size: 1.1rem;
+    margin-top: 0.5rem;
+  }
+
+  /* Content Card */
+  .content-card {
+    background: var(--primary-800);
+    padding: 2.5rem;
+    border-radius: 16px;
+    box-shadow: 0 8px 24px rgba(10, 25, 47, 0.15);
+    border: 1px solid var(--primary-700);
+  }
+
+  .card-header {
+    margin-bottom: 2rem;
+  }
+
+  .card-header h2 {
+    color: white;
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+  }
+
+  .section-description {
+    color: var(--neutral-400);
+  }
+
+  /* Note Form */
+  .note-form {
+    margin-bottom: 2.5rem;
+  }
+
+  .input-wrapper {
+    position: relative;
+    margin-bottom: 1rem;
+  }
+
+  .input-icon {
+    position: absolute;
+    left: 1rem;
+    top: 1rem;
+    color: var(--neutral-500);
+    font-size: 1.25rem;
+  }
+
+  textarea {
+    width: 100%;
+    min-height: 120px;
+    padding: 1rem 1rem 1rem 3rem;
+    background: var(--primary-900);
+    border: 1px solid var(--primary-700);
+    border-radius: 8px;
+    color: white;
+    font-size: 1rem;
+    resize: vertical;
+    transition: all 0.2s ease;
+  }
+
+  textarea:focus {
+    outline: none;
+    border-color: var(--accent-500);
+    box-shadow: 0 0 0 3px rgba(255, 87, 34, 0.1);
+  }
+
+  textarea::placeholder {
+    color: var(--neutral-600);
+  }
+
+  .add-note-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.875rem 1.5rem;
+    background: var(--accent-500);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .add-note-btn:hover {
+    background: var(--accent-600);
+    transform: translateY(-1px);
+  }
+
+  /* Notes Grid */
+  .notes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .note-card {
+    background: var(--primary-900);
+    padding: 1.5rem;
+    border-radius: 12px;
+    border: 1px solid var(--primary-700);
+    position: relative;
+    transition: all 0.2s ease;
+  }
+
+  .note-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+
+  .note-content {
+    color: var(--neutral-200);
+    font-size: 1rem;
+    line-height: 1.5;
+    margin: 0;
+    padding-right: 2rem;
+  }
+
+  .delete-btn {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: none;
+    border: none;
+    color: var(--neutral-500);
+    cursor: pointer;
+    opacity: 0;
+    transition: all 0.2s ease;
+    padding: 0.25rem;
+  }
+
+  .note-card:hover .delete-btn {
+    opacity: 1;
+  }
+
+  .delete-btn:hover {
+    color: var(--accent-500);
+  }
+
+  .delete-btn .material-icons {
+    font-size: 1.25rem;
+  }
+
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .home-wrapper {
+      padding: 1rem;
+    }
+
+    .content-card {
+      padding: 1.5rem;
+    }
+
+    .notes-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<script>
+function deleteNote(noteId) {
+  fetch("/delete-note", {
+    method: "POST",
+    body: JSON.stringify({ noteId: noteId }),
+  }).then((_res) => {
+    window.location.href = "/";
+  });
+}
+</script>

@@ -1,55 +1,338 @@
-{% extends "base.html" %} {% block title %}Login{% endblock %} {% block
-content%}
-<!-- <img src="\templates\wallpaperflare.com_wallpaper.jpg" /> -->
-<div class="headss">
-  <h1 align="center" style="font-family: Cursive; color: rgb(123, 251, 3)">
-    Web Application FireWall 
-  </h1>
+<div class="login-wrapper">
+  <div class="login-container">
+    <!-- Header -->
+    <div class="login-header">
+      <div class="logo-section">
+        <div class="logo-shield">
+          <span class="material-icons">security</span>
+        </div>
+        <h1>WAF SECURITY</h1>
+      </div>
+      <p class="subtitle">Enterprise-Grade Web Protection</p>
+    </div>
+
+    <!-- Login Form -->
+    <div class="form-card">
+      <form method="POST" class="login-form">
+        <h2>Welcome Back</h2>
+        <p class="form-description">Access your secure dashboard</p>
+        
+        <!-- Email Field -->
+        <div class="form-field">
+          <label for="email">
+            <span class="label-text">Email Address</span>
+            <span class="required">*</span>
+          </label>
+          <div class="input-wrapper">
+            <span class="material-icons input-icon">email</span>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              placeholder="Enter your email"
+              required
+            />
+          </div>
+        </div>
+
+        <!-- Password Field -->
+        <div class="form-field">
+          <label for="password">
+            <span class="label-text">Password</span>
+            <span class="required">*</span>
+          </label>
+          <div class="input-wrapper">
+            <span class="material-icons input-icon">lock</span>
+            <input
+              type="password"
+              id="password"
+              name="password"
+              placeholder="Enter your password"
+              required
+            />
+          </div>
+        </div>
+
+        <!-- Remember Me & Forgot Password -->
+        <div class="form-actions">
+          <label class="remember-me">
+            <input type="checkbox" name="remember">
+            <span>Remember me</span>
+          </label>
+          <a href="#" class="forgot-link">Forgot password?</a>
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" class="login-btn">
+          Sign In Securely
+          <span class="material-icons btn-icon">arrow_forward</span>
+        </button>
+
+        <div class="signup-link">
+          New to WAF? <a href="/sign-up">Create Account</a>
+        </div>
+      </form>
+    </div>
+  </div>
 </div>
-<form class="form form__container" method="POST">
-  <h3 class=".form__label" align="center" style="font-family: Cursive">
-    Welcome back
-  </h3>
-  <h4 class=".form__label" align="center" style="font-family: Cursive">
-    Login
-  </h4>
-  <div class="icons">
-    <!--<img src="/static/img/logo.png" width="70px" class="icon1"--> 
-    <div class="vl"></div>
-   <!--  <img src="/static/img/icon4.png" width="70px" class="icon2" /> -->
-  </div>
-  <div class="form-group form__field form__group">
-    <label for="email">Email Address</label>
-    <input
-      type="email"
-      class="form-control"
-      id="email"
-      name="email"
-      placeholder="Enter email"
-    />
-  </div>
-  <div class="form-group form__field">
-    <label for="password">Password</label>
-    <input
-      type="password"
-      class="form-control"
-      id="password"
-      name="password"
-      placeholder="Enter password"
-    />
-  </div>
-  <div class="checkbox">
-    <label><input type="checkbox" /> Remember me</label>
-    <a href="/sign-up" class="forgot">signUp</a>
-  </div>
-  <br />
-  <button
-    type="submit"
-    class="btn-success button--form"
-    ,
-    style="background-color: #4caf50"
-  >
-    Login
-  </button>
-</form>
-{% endblock %}
+
+<style>
+  @import url('https://fonts.googleapis.com/icon?family=Material+Icons');
+  
+  :root {
+    /* Primary Colors */
+    --primary-900: #0A192F;
+    --primary-800: #112240;
+    --primary-700: #1E3A5F;
+    --primary-600: #2A4A73;
+    --primary-100: #E6F1FF;
+    
+    /* Accent Colors */
+    --accent-500: #FF5722;
+    --accent-600: #F4511E;
+    --accent-700: #E64A19;
+    
+    /* Neutral Colors */
+    --neutral-900: #1A1F36;
+    --neutral-800: #2A2F45;
+    --neutral-700: #3C4257;
+    --neutral-600: #4F566B;
+    --neutral-500: #697386;
+    --neutral-400: #8792A2;
+    --neutral-300: #A3ACB9;
+    --neutral-200: #CED4DA;
+    --neutral-100: #F7FAFC;
+    
+    /* Other Variables */
+    --card-shadow: 0 8px 24px rgba(10, 25, 47, 0.15);
+    --input-shadow: 0 2px 4px rgba(10, 25, 47, 0.05);
+  }
+
+  body {
+    background-color: var(--primary-900);
+    color: var(--neutral-100);
+    font-family: system-ui, -apple-system, sans-serif;
+  }
+
+  .login-wrapper {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    background: linear-gradient(
+      135deg,
+      var(--primary-900),
+      var(--primary-800)
+    );
+  }
+
+  .login-container {
+    width: 100%;
+    max-width: 440px;
+  }
+
+  /* Logo & Header */
+  .logo-section {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .logo-shield {
+    background: var(--accent-500);
+    padding: 0.75rem;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .logo-shield .material-icons {
+    font-size: 2rem;
+    color: white;
+  }
+
+  .login-header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+  }
+
+  .login-header h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: white;
+    letter-spacing: 0.5px;
+  }
+
+  .subtitle {
+    color: var(--neutral-300);
+    font-size: 1.1rem;
+    margin-top: 0.5rem;
+  }
+
+  /* Form Card */
+  .form-card {
+    background: var(--primary-800);
+    padding: 2.5rem;
+    border-radius: 16px;
+    box-shadow: var(--card-shadow);
+    border: 1px solid var(--primary-700);
+  }
+
+  .login-form h2 {
+    color: white;
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+  }
+
+  .form-description {
+    color: var(--neutral-400);
+    margin-bottom: 2rem;
+  }
+
+  /* Form Fields */
+  .form-field {
+    margin-bottom: 1.5rem;
+  }
+
+  .form-field label {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .label-text {
+    color: var(--neutral-200);
+    font-size: 0.875rem;
+    font-weight: 500;
+  }
+
+  .required {
+    color: var(--accent-500);
+  }
+
+  .input-wrapper {
+    position: relative;
+  }
+
+  .input-icon {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--neutral-500);
+    font-size: 1.25rem;
+  }
+
+  input[type="email"],
+  input[type="password"] {
+    width: 100%;
+    padding: 0.875rem 1rem 0.875rem 3rem;
+    background: var(--primary-900);
+    border: 1px solid var(--primary-700);
+    border-radius: 8px;
+    color: white;
+    font-size: 1rem;
+    transition: all 0.2s ease;
+  }
+
+  input:focus {
+    outline: none;
+    border-color: var(--accent-500);
+    box-shadow: 0 0 0 3px rgba(255, 87, 34, 0.1);
+  }
+
+  input::placeholder {
+    color: var(--neutral-600);
+  }
+
+  /* Form Actions */
+  .form-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+  }
+
+  .remember-me {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--neutral-400);
+    font-size: 0.875rem;
+  }
+
+  .forgot-link {
+    color: var(--accent-500);
+    text-decoration: none;
+    font-size: 0.875rem;
+    font-weight: 500;
+  }
+
+  .forgot-link:hover {
+    color: var(--accent-600);
+    text-decoration: underline;
+  }
+
+  /* Button */
+  .login-btn {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 1rem;
+    background: var(--accent-500);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .login-btn:hover {
+    background: var(--accent-600);
+    transform: translateY(-1px);
+  }
+
+  .btn-icon {
+    font-size: 1.25rem;
+  }
+
+  /* Signup Link */
+  .signup-link {
+    text-align: center;
+    margin-top: 1.5rem;
+    color: var(--neutral-400);
+    font-size: 0.875rem;
+  }
+
+  .signup-link a {
+    color: var(--accent-500);
+    text-decoration: none;
+    font-weight: 500;
+  }
+
+  .signup-link a:hover {
+    color: var(--accent-600);
+    text-decoration: underline;
+  }
+
+  /* Responsive Design */
+  @media (max-width: 480px) {
+    .login-container {
+      padding: 1rem;
+    }
+
+    .form-card {
+      padding: 1.5rem;
+    }
+  }
+</style>
