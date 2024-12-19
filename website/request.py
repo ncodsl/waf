@@ -1,20 +1,17 @@
-'''Implementation of the logic for representing the requests and logging them.'''
-
-import datetime # to set the time 
+import datetime  # to set the time
 import sqlite3 
 import pandas as pd
 import json
-import os # to open any path 
+import os  # to open any path
 from pymongo import MongoClient
 from dotenv import load_dotenv
 
 load_dotenv()
 
-class Request(object):  #object is the mother of all classes in Python. It is a new-style class, so inheriting from object makes Table a new-style class.
-    def __init__(self, id = None , timestamp = None , origin = None, host = None, request = None, body = None, method = None, headers = None, threats = None, geo_location={} , threat_state={}):
-
+class Request(object):  
+    def __init__(self, id=None, timestamp=None, origin=None, host=None, request=None, body=None, method=None, headers=None, threats=None, geo_location={}, threat_state={}):
         self.id = id
-        self.timestamp = timestamp
+        self.timestamp = timestamp or datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")  # Default to current timestamp if None
         self.origin = origin
         self.host = host
         self.request = request
@@ -28,102 +25,79 @@ class Request(object):  #object is the mother of all classes in Python. It is a 
     def to_json(self):
         output = {}
 
-        if self.request != None and self.request != '':
+        if self.request:
             output['request'] = self.request
 
-        if self.body != None and self.body != '':
+        if self.body:
             output['body'] = self.body
 
-
-        # self.headers = {"name":"abddddd" , "age": 40 , "conutry" : "KSF"}
-        if self.headers != None:
+        if self.headers:
             for header, value in self.headers.items():
                 output[header] = value
 
-        # if self.headers != None:
-        #     for header in self.headers:
-        #         for value in self.headers[header]:
-        #             output[header] = value
-
-        # print(json.dumps(output))
-        return json.dumps(output) # to convert from dict into str
-
-        #output= {"request" : "value"  , "bode" :  "value"  , "header" : {"key" : "value" } }
-
-
-
-#----------------------------------------------- class 2 --------------------------------------------------------------------
-#-----------------
-#-----------------
-#----------------------------------------------------------------------------------------------------------------------------
-
+        return json.dumps(output)
 
 
 class DBController(object):
     """
-    used to save the parse Request in database (used it for Dashboard web-site)
+    Used to save the parsed Request into the database.
     """
-
     def __init__(self):
-        self.connect_to_mongodb = MongoClient(os.getenv("MONGODB_URI"))  # connect to database
-        # name of database
+        self.connect_to_mongodb = MongoClient(os.getenv("MONGODB_URI"))  # Connect to database
         self.db = self.connect_to_mongodb["Web_Application_Firewall"]
-        self.collection_logs = self.db["logs"]  # collection name
-        self.collection_threats = self.db["threats"]  # collection name
+        self.collection_logs = self.db["logs"]
+        self.collection_threats = self.db["threats"]
         self.collection_header = self.db["full_header"]
         self.collection_location = self.db["geo_location"]
         self.collection_stat = self.db["stat"]
-        self.collection_threat_location=self.db['threat_location']
+        self.collection_threat_location = self.db['threat_location']
 
-
-    def save(self, req):
+    def save(self, req: Request):
         try:
-            highest_id = self.collection_logs.find_one(
-                sort=[('_id', -1)])['_id']
+            # Get the highest _id value in the collection and increment it
+            highest_id = self.collection_logs.find_one(sort=[('_id', -1)])['_id']
         except (TypeError, KeyError):
-            highest_id = 0
+            highest_id = 0  # If no records exist, start with id 1
 
-        obj.id = highest_id+1
-        #======================================================================================================================================
+        req.id = highest_id + 1
 
-
-        #======================================================================================================================================
-        document = {'_id':obj.id ,"timestamb": obj.timestamp,
-                    "origin": obj.origin, "host": obj.host, "method": obj.method}
-
+        # Save basic request information to logs collection
+        document = {
+            '_id': req.id,
+            "timestamp": req.timestamp,
+            "origin": req.origin,
+            "host": req.host,
+            "method": req.method
+        }
         self.collection_logs.insert_one(document)
-        #======================================================================================================================================
 
-        #======================================================================================================================================
-        for threat, location in obj.threats.items():
-            collection_threats = self.db["threats"]
-            document_two = {'_id':obj.id,
-                "threat_type": threat, "location": location}
-            collection_threats.insert_one(document_two)
+        # Save threat data to threats collection
+        for threat, location in req.threats.items():
+            document_two = {
+                '_id': req.id,
+                "threat_type": threat,
+                "location": location
+            }
+            self.collection_threats.insert_one(document_two)
 
-        #======================================================================================================================================
-        headers = {'_id':obj.id }
-        for key , value in obj.headers.items():
-            headers[key]=value
-
+        # Save headers data to full_header collection
+        headers = {'_id': req.id}
+        for key, value in req.headers.items():
+            headers[key] = value
         self.collection_header.insert_one(headers)
 
-        #======================================================================================================================================
-        geo_location = {'_id':obj.id, 'threat_state':obj.threat_state }
-        for key , value in obj.geo_location.items():
-            geo_location[key]=value
-
-        
+        # Save geo-location and threat state to geo_location collection
+        geo_location = {'_id': req.id, 'threat_state': req.threat_state}
+        for key, value in req.geo_location.items():
+            geo_location[key] = value
         self.collection_location.insert_one(geo_location)
-        # self.collection_location.insert_one(obj.threat_state)
-        
-        #======================================================================================================================================
 
-
-        df = pd.DataFrame(list(collection_threats.find()))
+        # Analyze threats and statistics from the threat data
+        df = pd.DataFrame(list(self.collection_threats.find()))
         threat_counts = df['threat_type'].value_counts()
         total = threat_counts.sum() if len(df) > 0 else 1
 
+        # Calculate threat percentages
         valid_count_pres = threat_counts.get('valid', 0) / total * 100
         xss_count_pres = threat_counts.get('xss', 0) / total * 100
         sql_count_pres = threat_counts.get('sqli', 0) / total * 100
@@ -131,6 +105,7 @@ class DBController(object):
         pathTrav_count_pres = threat_counts.get('path-traversal', 0) / total * 100
         sum_att = (xss_count_pres + sql_count_pres + cmdi_count_pres + pathTrav_count_pres)
 
+        # Calculate location statistics
         location_counts = df["location"].value_counts()
         location_total = location_counts.sum() if len(df) > 0 else 1
 
@@ -141,14 +116,27 @@ class DBController(object):
         Accept_Encoding_count = location_counts.get("Accept_Encoding", 0) / location_total * 100
         Accept_Language_count = location_counts.get("Accept_Language", 0) / location_total * 100
 
-        stat = {'_id':obj.id, 'valid':valid_count_pres, 'xss':xss_count_pres, 
-                'sql':sql_count_pres, 'cmdi':cmdi_count_pres, 
-                'path-traversal':pathTrav_count_pres, 'sum_Attacks': sum_att}
+        # Save statistics to stat collection
+        stat = {
+            '_id': req.id,
+            'valid': valid_count_pres,
+            'xss': xss_count_pres,
+            'sql': sql_count_pres,
+            'cmdi': cmdi_count_pres,
+            'path-traversal': pathTrav_count_pres,
+            'sum_Attacks': sum_att
+        }
         self.collection_stat.insert_one(stat)
 
-        document_three = {'_id':obj.id, "Request": Request_count, 
-                         "Body": Body_count, "Cookie": Cookie_count,
-                         "User_Agent": User_Agent_count, 
-                         "Accept_Encoding": Accept_Encoding_count, 
-                         "Accept_Language": Accept_Language_count}
+        # Save threat location statistics to threat_location collection
+        document_three = {
+            '_id': req.id,
+            "Request": Request_count,
+            "Body": Body_count,
+            "Cookie": Cookie_count,
+            "User_Agent": User_Agent_count,
+            "Accept_Encoding": Accept_Encoding_count,
+            "Accept_Language": Accept_Language_count
+        }
         self.collection_threat_location.insert_one(document_three)
+
