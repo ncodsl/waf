@@ -19,7 +19,7 @@ DB_NAME = "database.db"
 uri = os.getenv("MONGODB_URI")  # Fetches the MONGO_URI directly from the .env file
 
 # Create a new MongoDB client and connect to the server
-client = MongoClient(uri, server_api=ServerApi('1'))
+client = MongoClient(uri)
 
 # Send a ping to confirm a successful connection to MongoDB
 try:
