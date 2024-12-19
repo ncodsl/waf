@@ -23,13 +23,13 @@ def create_app():
     mongo = PyMongo(app)
     
     # Test MongoDB connection using ping
-    try:
+  #  try:
         # Ping the MongoDB server to check the connection
-        mongo.db.command("ping")  # This ensures the MongoDB connection is active
-        print("MongoDB connection successful!")
-    except Exception as e:
-        print(f"Error connecting to MongoDB: {str(e)}")
-        raise
+       # mongo.db.command("ping")  # This ensures the MongoDB connection is active
+       # print("MongoDB connection successful!")
+  #  except Exception as e:
+   #     print(f"Error connecting to MongoDB: {str(e)}")
+       # raise
 
     # 2. Setup SQLAlchemy
     app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{DB_NAME}'  # SQLite database URI
